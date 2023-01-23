@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
+import { Product } from "../protocols/product.js";
 
 function teste(req: Request, res: Response) {
 
-    const { teste } = req.query;
+    const { name, price, description} = req.body as Product;
 
-    res.send({message: "oizada"}).status(200);
+    res.send({name, price, description}).status(200);
 
 }
 

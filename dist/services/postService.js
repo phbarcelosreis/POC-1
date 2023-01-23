@@ -34,12 +34,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import connection from "../database/db";
-function addProducts(name, price, description) {
+import connection from "../database/db.js";
+function addProducts(newProduct) {
     return __awaiter(this, void 0, void 0, function () {
+        var name, price, description;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, connection.query("\n        INSERT INTO\n        products (name, price, description)\n        VALUES ($1, $2, $3)\n        ", [name, price, description])];
+                case 0:
+                    name = newProduct.name, price = newProduct.price, description = newProduct.description;
+                    return [4 /*yield*/, connection.query("\n        INSERT INTO\n        products (name, price, description)\n        VALUES ($1, $2, $3)\n        ", [name, price, description])];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];

@@ -1,5 +1,5 @@
 function teste(req, res) {
-    var teste = req.query.teste;
-    res.send({ message: "oizada" }).status(200);
+    var _a = req.body, name = _a.name, price = _a.price, description = _a.description;
+    res.send({ name: name, price: price, description: description }).status(200);
 }
 export { teste };
