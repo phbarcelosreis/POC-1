@@ -36,29 +36,44 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import connection from "../database/db.js";
 function addProducts(newProduct) {
+    var name = newProduct.name, price = newProduct.price, description = newProduct.description;
+    connection.query("\n        INSERT INTO\n        products (name, price, description)\n        VALUES ($1, $2, $3)\n        ", [name, price, description]);
+}
+function getAllProducts() {
     return __awaiter(this, void 0, void 0, function () {
-        var name, price, description;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    name = newProduct.name, price = newProduct.price, description = newProduct.description;
-                    return [4 /*yield*/, connection.query("\n        INSERT INTO\n        products (name, price, description)\n        VALUES ($1, $2, $3)\n        ", [name, price, description])];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
+                case 0: return [4 /*yield*/, connection.query("\n        SELECT * FROM\n        products\n        ")];
+                case 1: return [2 /*return*/, _a.sent()];
             }
         });
     });
 }
-function addClients(name, address, phone) {
+function filterProductsByName(name) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, connection.query("\n            INSERT INTO\n            clients (name, address, phone)\n            VALUES ($1, $2, $3)\n            ", [name, address, phone])];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
+                case 0: return [4 /*yield*/, connection.query("\n        SELECT * FROM\n        products WHERE\n        LOWER(name) LIKE LOWER($1)\n        ", ["%".concat(name, "%")])];
+                case 1: return [2 /*return*/, _a.sent()];
             }
         });
     });
 }
+function filterProductsById(id) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, connection.query("\n        DELETE FROM products\n        WHERE id = $1\n        ", [id])];
+                case 1: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+}
+function updateQuery(newObj) {
+    var id = newObj.id, price = newObj.price;
+    connection.query("\n        UPDATE products SET price = $2\n        WHERE id = $1\n        ", [id, price]);
+}
+function deleteProduct(id) {
+    connection.query("\n        DELETE FROM products\n        WHERE id = $1\n        ", [id]);
+}
+export { addProducts, filterProductsByName, filterProductsById, updateQuery, getAllProducts, deleteProduct };

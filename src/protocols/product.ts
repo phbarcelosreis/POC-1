@@ -4,3 +4,8 @@ export type Product = {
     price: number,
     description: string
 }
+
+export type checkUpdate ={
+    id: number,
+    price: number
+}

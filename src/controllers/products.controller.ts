@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { Product } from "../protocols/product.js";
-import { addProducts, filterProducts } from "../services/postService.js";
+import { checkUpdate, Product } from "../protocols/product.js";
+import { addProducts, deleteProduct, filterProductsById , filterProductsByName, getAllProducts, updateQuery } from "../services/postService.js";
 
 function postProduct(req: Request, res: Response) {
 
@@ -20,10 +20,41 @@ async function filterProduct(req: Request, res: Response) {
 
     const { name } = req.query;
 
-    const newNames = await filterProducts(name);
+    if(!name){
+
+        const all = await getAllProducts();
+
+        return res.send(all.rows);
+    }
+
+    const newNames = await filterProductsByName(name);
     console.log(newNames.rows)
 
     return res.send(newNames.rows);
 }
 
-export { postProduct, filterProduct };
+function updateProducts(req: Request, res: Response){
+
+    const { id } = req.params;
+    const { price } = req.query;
+
+    const newObj: checkUpdate = {
+        id: Number(id),
+        price: Number(price)
+    }
+
+    updateQuery(newObj);
+
+    return res.sendStatus(200);
+
+}
+
+function productDelete(req: Request, res: Response){
+
+    deleteProduct(Number(req.query.id));
+
+    res.sendStatus(200);
+
+}
+
+export { postProduct, filterProduct, updateProducts, productDelete };

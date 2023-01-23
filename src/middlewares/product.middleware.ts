@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { product } from "../schemas/schemas.js";
-import { filterProducts } from "../services/postService.js";
+import { deleteProduct, filterProductsById, filterProductsByName } from "../services/postService.js";
 
 function checkProduct(req: Request, res: Response, next: NextFunction) {
 
@@ -26,14 +26,38 @@ async function verifyFilterProduct(req: Request, res: Response, next: NextFuncti
 
     const { name } = req.query;
 
-    const checkName = await filterProducts(name);
+    if(name){
+        const checkName = await filterProductsByName(name);
 
-    if(checkName.rowCount === 0){
-        return res.status(400).send({message: "Não foi encontrado produto com esse nome!"});
+        if(checkName.rowCount === 0){
+            return res.status(400).send({message: "Não foi encontrado produto com esse nome!"});
+        }
     }
 
     next();
 
 }
 
-export { checkProduct, verifyFilterProduct };
+function checkUpdate(req: Request, res: Response, next: NextFunction){
+
+    const { price } = req.query;
+
+    if(!price){
+        return res.sendStatus(400).send({message: "Insira algum valor!"})
+    }
+
+    next()
+}
+
+async function checkDel(req: Request, res: Response, next: NextFunction){
+
+    const checkExist = await filterProductsById(Number(req.query.id));
+    if(checkExist.rowCount === 0){
+        return res.sendStatus(400).send({message: "Não existe nenhum produto com esse ID"})
+    }
+
+    next()
+
+}
+
+export { checkProduct, verifyFilterProduct, checkUpdate, checkDel };

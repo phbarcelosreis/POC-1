@@ -34,66 +34,50 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { product } from "../schemas/schemas.js";
-import { filterProductsById, filterProductsByName } from "../services/postService.js";
-function checkProduct(req, res, next) {
+import { addProducts, deleteProduct, filterProductsByName, getAllProducts, updateQuery } from "../services/postService.js";
+function postProduct(req, res) {
     var _a = req.body, name = _a.name, price = _a.price, description = _a.description;
-    var productObj = {
+    var newProduct = {
         name: name,
         price: price,
         description: description
     };
-    var validation = product.validate(productObj);
-    if (validation.error) {
-        var errors = validation.error.details.map(function (detail) { return detail.message; });
-        return res.status(422).send(errors);
-    }
-    next();
+    addProducts(newProduct);
+    return res.sendStatus(200);
 }
-function verifyFilterProduct(req, res, next) {
+function filterProduct(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var name, checkName;
+        var name, all, newNames;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     name = req.query.name;
-                    if (!name) return [3 /*break*/, 2];
-                    return [4 /*yield*/, filterProductsByName(name)];
+                    if (!!name) return [3 /*break*/, 2];
+                    return [4 /*yield*/, getAllProducts()];
                 case 1:
-                    checkName = _a.sent();
-                    if (checkName.rowCount === 0) {
-                        return [2 /*return*/, res.status(400).send({ message: "Não foi encontrado produto com esse nome!" })];
-                    }
-                    _a.label = 2;
-                case 2:
-                    next();
-                    return [2 /*return*/];
+                    all = _a.sent();
+                    return [2 /*return*/, res.send(all.rows)];
+                case 2: return [4 /*yield*/, filterProductsByName(name)];
+                case 3:
+                    newNames = _a.sent();
+                    console.log(newNames.rows);
+                    return [2 /*return*/, res.send(newNames.rows)];
             }
         });
     });
 }
-function checkUpdate(req, res, next) {
+function updateProducts(req, res) {
+    var id = req.params.id;
     var price = req.query.price;
-    if (!price) {
-        return res.sendStatus(400).send({ message: "Insira algum valor!" });
-    }
-    next();
+    var newObj = {
+        id: Number(id),
+        price: Number(price)
+    };
+    updateQuery(newObj);
+    return res.sendStatus(200);
 }
-function checkDel(req, res, next) {
-    return __awaiter(this, void 0, void 0, function () {
-        var checkExist;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, filterProductsById(Number(req.query.id))];
-                case 1:
-                    checkExist = _a.sent();
-                    if (checkExist.rowCount === 0) {
-                        return [2 /*return*/, res.sendStatus(400).send({ message: "Não existe nenhum produto com esse ID" })];
-                    }
-                    next();
-                    return [2 /*return*/];
-            }
-        });
-    });
+function productDelete(req, res) {
+    deleteProduct(Number(req.query.id));
+    res.sendStatus(200);
 }
-export { checkProduct, verifyFilterProduct, checkUpdate, checkDel };
+export { postProduct, filterProduct, updateProducts, productDelete };

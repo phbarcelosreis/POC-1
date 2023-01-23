@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { teste } from "../controllers/teste.js";
-import { checkProduct } from "../middlewares/product.middleware.js";
-var testeRota = Router();
-testeRota.post("/teste", checkProduct, teste);
-export { testeRota };
+import { productRoute } from "./productsRoute.js";
+var routes = Router();
+routes.use(productRoute);
+export { routes };
