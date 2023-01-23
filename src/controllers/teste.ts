@@ -4,7 +4,7 @@ function teste(req: Request, res: Response) {
 
     const { teste } = req.query;
 
-    res.send({message: "xauzada"}).status(200);
+    res.send({message: "oizada"}).status(200);
 
 }
 
