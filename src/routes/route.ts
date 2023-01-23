@@ -1,9 +1,8 @@
 import { Router } from "express";
-import { teste } from "../controllers/teste.js";
-import { checkProduct } from "../middlewares/product.middleware.js";
+import { productRoute } from "./productsRoute.js";
 
-const testeRota = Router();
+const routes = Router();
 
-testeRota.post("/teste", checkProduct, teste);
+routes.use(productRoute)
 
-export {testeRota}
+export {routes}

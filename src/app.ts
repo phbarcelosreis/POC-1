@@ -1,11 +1,14 @@
 import express from "express";
-import { testeRota } from "./routes/route.js"
+import { routes } from "./routes/route.js"
 import cors from "cors"
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const server = express();
 
 server.use(express.json());
-server.use(testeRota);
+server.use(routes);
 server.use(cors());
 
 const PORT = process.env.PORT || 5000;

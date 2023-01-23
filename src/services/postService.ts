@@ -1,11 +1,12 @@
+import { ParsedQs } from "qs";
 import connection from "../database/db.js";
 import { Product } from "../protocols/product.js";
 
 
-async function addProducts(newProduct: Product){
+function addProducts(newProduct: Product){
     const { name, price, description} = newProduct;
 
-    await connection.query(
+    connection.query<Product>(
         `
         INSERT INTO
         products (name, price, description)
@@ -16,15 +17,20 @@ async function addProducts(newProduct: Product){
 
 }
 
-async function addClients(name, address, phone) {
+async function filterProducts(name: string | ParsedQs | string[] | ParsedQs[]){
 
-        await connection.query(
-            `
-            INSERT INTO
-            clients (name, address, phone)
-            VALUES ($1, $2, $3)
-            `,
-            [name, address, phone]
-        );
+    return await connection.query<String>(
+        `
+        SELECT * FROM
+        products WHERE
+        LOWER(name) LIKE LOWER($1)
+        `,
+        [`%${name}%`]
+    )
 
+}
+
+export {
+    addProducts,
+    filterProducts
 }
